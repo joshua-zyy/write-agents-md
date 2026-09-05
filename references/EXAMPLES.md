@@ -84,18 +84,22 @@ The user wants a shorter file, not a new document hierarchy. Existing file:
 - Use pnpm.
 - Run tests with `pnpm test`.
 - The implementation is in `src/legacy/`.
+- The loader currently uses zero workers.
 - Write clean code.
 ```
 
 Evidence: manifest and CI confirm pnpm and the test command. The directory
-map is outdated; the named directory no longer exists. No origin records
-are available for the rules.
+map is outdated; the named directory no longer exists. The worker count
+matches the loader configuration, but merely repeats its current default;
+no instruction to preserve that default or associated workflow hazard is
+established. No origin records are available for the rules.
 
 | Instruction | Verdict | Reason |
 | --- | --- | --- |
-| Use pnpm | KEEP | Confirmed by current configuration |
-| Run tests with `pnpm test` | KEEP | Confirmed by the manifest and CI |
+| Use pnpm | KEEP | Confirmed by configuration; avoids choosing a different package manager and changing the lockfile |
+| Run tests with `pnpm test` | KEEP | Confirmed by CI; identifies the intended test entrypoint without rediscovering it |
 | Implementation is in `src/legacy/` | DROP | The named directory is absent, not merely a path that might someday drift |
+| Loader currently uses zero workers | DROP | Accurate but duplicates a readily available default without an established decision benefit; not a request to change loader behavior |
 | Write clean code | DROP | No concrete decision or completion criterion |
 
 Complete replacement proposal:
@@ -110,3 +114,22 @@ Complete replacement proposal:
 No material permission or boundary ambiguity was found; do not invent one
 to fill the five dimensions. After approval, write and read back this
 single file. No new linked documents or unrelated source edits are needed.
+If evidence instead ties zero workers to a platform failure, that changes
+its retention value: preserve the constraint with its reason rather than
+mechanically deleting configuration details.
+
+## Keep a Factual Review Bounded
+
+Suppose a research project file describes a dual-branch classifier and names
+two supported tasks. A targeted check confirms both, while configuration
+also lists another task and additional branch switches. This does not by
+itself make the overview wrong or require a catalog of every switch.
+If the task list claims to be exhaustive, correct that claim using the
+observed configuration. Do not call the extra task "exploratory" or
+"secondary" without evidence of its role. Ask about positioning only if it
+matters to the proposed instruction.
+
+Once the relevant claims and retention decisions are supported, stop.
+Delegate a specific unresolved claim if useful, not a search for every
+important detail the file omits. Report static checks as static checks;
+do not run training merely to review the instruction file.

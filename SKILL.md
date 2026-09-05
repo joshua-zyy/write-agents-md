@@ -49,8 +49,13 @@ Read only what the scope needs:
   source them; ask the user instead.
 - **Project / nested**: applicable parent and existing instruction files,
   relevant README, manifests, CI config, and directory layout. Check inherited
-  constraints before adding duplicate or conflicting rules. Stop once the
-  evidence supports the decisions at hand; do not read the full codebase.
+  constraints before adding duplicate or conflicting rules. In reviews,
+  tie further reads or delegated checks to a material KEEP/DROP/REWRITE
+  decision. Stop once those decisions are supported. If a material claim
+  remains unverifiable after targeted checks, report it as unresolved rather
+  than guessing. Do not audit the full codebase or inventory omitted details
+  by default; investigate omissions only when they could mislead the intended
+  workflow or the user asks for broader coverage.
 
 ## Create Path (new file)
 
@@ -82,10 +87,12 @@ omissions:
 Assess each row along five dimensions and surface the evidence that
 matters:
 
-- **Provenance** — separate what you can verify (repo docs or CI, an
-  explicit user statement) from what you infer (probable leftover, stale
-  copy). Unknown history is stated as unknown; do not dig through old
-  sessions indefinitely to reconstruct it. Assess the weakness the rule
+- **Provenance** — separate current implementation facts, explicit user
+  intent, and historical origin. Code can show a feature exists, not its
+  research role, maturity, or why the user wanted a rule. Qualify unsupported
+  interpretations or omit them; ask only when intent affects the decision.
+  State unknown history once for affected rules rather than inventing it or
+  searching old sessions indefinitely. Assess the weakness the rule
   currently guards against, whether it still occurs, and any side effects;
   distinguish this assessment from historical intent. Do not claim newer
   models no longer need a rule without evidence.
@@ -102,10 +109,14 @@ matters:
   or seek human review? Where relevant, propose bounded verification and
   honest reporting of unresolved blockers rather than endless retries;
   do not treat every recoverable failure as a reason to stop.
-- **Context economics** — what the instruction costs versus what it buys
-  whenever loaded. Vague or redundant rules are DROP
-  candidates, not automatic deletions. Resolve conflicting intent with the
-  user; do not discard a specific preference merely as "model knowledge".
+- **Context economics** — accuracy alone does not earn a rule a place in
+  the file. Identify the concrete mistake it prevents or repeated discovery
+  it saves, weighed against loading and maintenance costs. Paths, commands,
+  and interfaces may earn their space; easily rediscovered implementation
+  snapshots may not. Explain retention value, not just "exists in code".
+  Vague or redundant rules are DROP candidates, not automatic deletions;
+  preserve explicit preferences and resolve conflicting intent with the user.
+  Do not shorten the file merely to meet a size target.
 
 **2. Complete replacement draft** — the full file after applying the
 table; every original instruction accounted for as kept, rewritten, or
