@@ -1,117 +1,112 @@
 # Examples
 
-Good and bad AGENTS.md content, plus multi-level layouts. Read this when drafting or when the user asks for examples.
+Illustrative scenarios, not repository facts or default policies. The
+shown evidence and user decisions apply only within each example.
 
-## Bad: The Ball of Mud
+## Review a Global File
+
+Existing file:
 
 ```markdown
-# Project
+# Preferences
 
-This is a web app with a React frontend, a Node backend, a Python data pipeline,
-and a mobile app. We use pnpm. The backend is in server/src/, the frontend is in
-web/src/, the mobile app is in mobile/, and the data pipeline is in pipeline/.
-Authentication is in server/src/auth/handlers.ts and the database layer is in
-server/src/db/repository.ts. We use PostgreSQL 16 with Prisma...
-
-ALWAYS use const instead of let.
-NEVER use var.
-ALWAYS use TypeScript strict mode.
-NEVER use any.
-Use interface instead of type when possible.
-Always write clean code.
-Always run tests before committing.
-Always follow the 12-factor app principles.
-...
+- Always answer in English.
+- Never run git push.
+- Use ripgrep when searching.
+- Ask before every shell command that writes files.
 ```
 
-Problems: stale paths the agent will trust blindly, redundant rules ("clean code"),
-contradictory piles of accumulated opinions, and token waste on every single request.
+No historical explanation is available. State that provenance is unknown;
+current wording still establishes preferences and restrictions.
 
-## Good: Minimal Root
+| Instruction | Verdict | Reason |
+| --- | --- | --- |
+| Always answer in English | KEEP | Clear language preference; short and useful without guessing its origin |
+| Never run git push | KEEP | Explicit restriction; preserve it regardless of whether other tools can push |
+| Use ripgrep when searching | KEEP | Specific tool preference; no evidence that it is obsolete or merely a speed hint |
+| Ask before every shell command that writes files | REWRITE (pending approval) | Could block local tests that write caches while leaving editing tools uncovered; ask whether that distinction is intentional |
+
+Question: should the last rule remain tool-specific, or should an agreed
+scope of repository edits and local validation be allowed regardless of
+tool? Explain the reduced approval overhead and reduced per-action control;
+do not pick for the user.
+
+A complete conservative replacement pending the answer preserves the
+restriction:
 
 ```markdown
-# Acme Dashboard
+# Preferences
 
-A web dashboard for Acme's internal analytics, React + Node + Postgres.
+- Answer in English.
+- Never run git push.
+- Use ripgrep when searching.
+- Ask before every shell command that writes files.
+```
 
-## Commands
+For an implementation workflow with no stopping criteria, separately offer
+completion conditions for approval: finish after agreed checks pass;
+report unresolved blockers and request decisions when needed. Do not insert
+this new rule into the file before the user agrees. Keep questions outside
+the proposed file. Unknown history alone does not require more interviews.
+
+## Create a Project File
+
+Read-only evidence: `package.json` specifies pnpm and defines `test` and
+`typecheck`; CI runs both. The README describes a webhook delivery service.
+Applicable parent instructions already define permissions. The user asks
+for an English file and adds a conventional-commit preference.
+
+Draft:
+
+```markdown
+# Acme Webhooks
+
+A webhook delivery service.
 
 - Package manager: pnpm
-- Dev: `pnpm dev`
 - Test: `pnpm test`
 - Typecheck: `pnpm typecheck`
-
-## Conventions
-
-- For TypeScript conventions, see [docs/TYPESCRIPT.md](docs/TYPESCRIPT.md)
-- For testing patterns, see [docs/TESTING.md](docs/TESTING.md)
+- Use conventional commits.
 ```
 
-Note the light touch: no "always", no all-caps forcing, just conversational references.
+Explain that commands were found in configuration, not executed. Omit an
+unsupported build command without starting another search or interview.
+Do not duplicate inherited permissions. No review table or extra section
+files are needed; await approval before writing the draft.
 
-## Progressive Disclosure Tree
+## Simplify an Existing Project File
 
-```text
-docs/
-├── TYPESCRIPT.md   # references TESTING.md
-├── TESTING.md      # references specific test runners
-└── BUILD.md        # references esbuild configuration
-```
-
-## Multi-Level (Monorepo)
-
-Root `AGENTS.md`:
+The user wants a shorter file, not a new document hierarchy. Existing file:
 
 ```markdown
-# Acme Monorepo
+# Acme Webhooks
 
-A monorepo containing web services and CLI tools.
-
-Use pnpm workspaces to manage dependencies.
-
-See each package's AGENTS.md for specific guidelines.
+- Use pnpm.
+- Run tests with `pnpm test`.
+- The implementation is in `src/legacy/`.
+- Write clean code.
 ```
 
-Package `packages/api/AGENTS.md`:
+Evidence: manifest and CI confirm pnpm and the test command. The directory
+map is outdated; the named directory no longer exists. No origin records
+are available for the rules.
+
+| Instruction | Verdict | Reason |
+| --- | --- | --- |
+| Use pnpm | KEEP | Confirmed by current configuration |
+| Run tests with `pnpm test` | KEEP | Confirmed by the manifest and CI |
+| Implementation is in `src/legacy/` | DROP | The named directory is absent, not merely a path that might someday drift |
+| Write clean code | DROP | No concrete decision or completion criterion |
+
+Complete replacement proposal:
 
 ```markdown
-# API Package
+# Acme Webhooks
 
-A Node.js GraphQL API using Prisma.
-
-Follow docs/API_CONVENTIONS.md for API design patterns.
+- Use pnpm.
+- Run tests with `pnpm test`.
 ```
 
-Each level stays focused on what is relevant at that scope — the agent sees all
-merged files, so overloading any level hurts everyone.
-
-## Before / After Refactor
-
-Before (root file, 120 lines of accumulated rules):
-
-```markdown
-- TypeScript: use interface not type, strict mode, no any, const not let...
-- Testing: use vitest, describe/it, no snapshots, mock the db with...
-- Git: conventional commits, scope in subject, no merge commits...
-- API: REST over GraphQL, paginate everything, return 404 not 204...
-```
-
-After (minimal root + links):
-
-```markdown
-# Acme Dashboard
-
-A web dashboard for Acme's internal analytics, React + Node + Postgres.
-
-## Commands
-
-- Package manager: pnpm
-- Test: `pnpm test`
-
-## Conventions
-
-- For TypeScript conventions, see [docs/TYPESCRIPT.md](docs/TYPESCRIPT.md)
-- For testing patterns, see [docs/TESTING.md](docs/TESTING.md)
-- For Git workflow, see [docs/GIT.md](docs/GIT.md)
-- For API design, see [docs/API.md](docs/API.md)
-```
+No material permission or boundary ambiguity was found; do not invent one
+to fill the five dimensions. After approval, write and read back this
+single file. No new linked documents or unrelated source edits are needed.

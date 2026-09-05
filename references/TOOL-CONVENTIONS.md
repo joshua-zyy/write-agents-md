@@ -1,34 +1,45 @@
 # Tool Conventions: Agent Instruction Files
 
-How each agent platform discovers instruction files. Read this when adapting the output to the user's specific tools.
+How agent platforms commonly discover instruction files. Read this when
+adapting output for a specific tool.
 
-## Comparison
+**The table below is a starting point, not a verified fact sheet.** Naming
+and loading behavior change between versions and setups. Before relying on
+a row for a real decision, check it against the user's installed version
+(release notes, `--help`, or the tool's own docs).
+
+## Commonly Reported Conventions
 
 | Tool | Files | Notes |
 | --- | --- | --- |
-| Claude Code | `CLAUDE.md`, `.claude/CLAUDE.md` | Does **not** read `AGENTS.md` directly; can import it with `@AGENTS.md` |
-| OpenAI Codex | `AGENTS.md`, `AGENTS.override.md` | Directory-hierarchy merge; closer files take precedence |
-| Cursor | `.cursor/rules/*.mdc` (recommended) | `.cursorrules` is legacy; root `AGENTS.md` is also supported |
-| Gemini CLI | `GEMINI.md` | Hierarchical loading, `@` imports, custom file names |
-| Aider | none automatic | `--read AGENTS.md` or `CONVENTIONS.md` |
-| Pi | `AGENTS.md` (global + project), `CLAUDE.md` | Native support, layered loading |
-| VS Code / Copilot | root + experimental nested `AGENTS.md` | `/init` command generates instructions |
+| Claude Code | `CLAUDE.md`, `.claude/CLAUDE.md` | Commonly reported not to read `AGENTS.md` directly; `@AGENTS.md` imports are one workaround |
+| OpenAI Codex | `AGENTS.md` | Reported directory hierarchy with closer files taking precedence |
+| Cursor | `.cursor/rules/*.mdc` | `.cursorrules` is legacy; root `AGENTS.md` also reported as supported |
+| Gemini CLI | `GEMINI.md` | Reported hierarchical loading and `@` imports |
+| Aider | none automatic | `--read AGENTS.md` or a `CONVENTIONS.md` |
+| Pi | `AGENTS.md`, `CLAUDE.md` | Native support, layered loading |
+| VS Code / Copilot | root `AGENTS.md` | `/init` generates instructions; nested support is experimental |
 
-## The Open Standard
+Whether nested files merge with the root also varies by tool and version —
+confirm before promising a user that their multi-level layout will merge.
 
-- [agentsmd/agents.md](https://github.com/agentsmd/agents.md) — the mainstream open convention: pure Markdown, no required fields, root plus nested files.
-- The AGENTS.md v1.1 proposal (issue #135) adds explicit hierarchy, inheritance, precedence, and progressive disclosure — the spec is still settling, so target today's widely-supported baseline.
+## The Open Convention
 
-## Adaptation Patterns
+- [agentsmd/agents.md](https://github.com/agentsmd/agents.md) — pure
+  Markdown, no required fields. Check the repository for the current state
+  of nested-file and hierarchy support.
 
-Use **AGENTS.md as the single source of truth** and adapt per tool — prefer symlinks over copies: one source, no drift.
+## Adaptation Options
 
-- **Claude Code**: `ln -s AGENTS.md CLAUDE.md`, or `@AGENTS.md` imports in `.claude/CLAUDE.md`
-- **Gemini CLI**: `ln -s AGENTS.md GEMINI.md`, or configure a custom file name
-- **Cursor**: keep AGENTS.md for portability; optionally mirror key rules into `.cursor/rules/*.mdc` if the user relies on Cursor's rule UI
-- **Aider**: launch with `--read AGENTS.md`
-- **Codex**: no action needed — AGENTS.md is native
-- **Pi**: no action needed — AGENTS.md is native
-- **VS Code**: no action needed — root AGENTS.md is supported
+Offer cross-tool adaptation only when the user actually uses other tools
+and asks for it. No option is universally right — present the tradeoffs
+and let the user choose:
 
-Note: symlinked instruction files work in the repository itself; the packaging restriction on symlinks only applies to distributing agent skills, not to repo files.
+- **Import or reference**: keep one `AGENTS.md` and have other tools load
+  it (`@AGENTS.md` in Claude Code, `--read` for Aider). No duplication,
+  but it depends on the import feature existing in the user's version.
+- **Symlink**: `CLAUDE.md -> AGENTS.md`. One source, no drift — but
+  symlinks break on some platforms and checkouts (notably some Windows
+  setups). Check before creating one.
+- **Copy or mirror**: duplicate content per tool. Robust everywhere, but
+  copies drift when only one is edited.

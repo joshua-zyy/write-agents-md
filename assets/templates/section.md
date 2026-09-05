@@ -10,5 +10,6 @@ Applies when <working on domain X / writing language Y>.
 
 ## Reference
 
-<!-- Optional nested pointers: -->
+<!-- Optional. Link directly to the file or document that holds the answer;
+     avoid chains of pointers that add hops without adding information. -->
 - See <other file or external doc> for <aspect>.

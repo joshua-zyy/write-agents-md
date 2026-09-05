@@ -1,19 +1,21 @@
 # <Project name>
 
-<One sentence: what this project is and why it exists. This anchors every
-decision the agent makes. Example: "A web dashboard for Acme's internal
-analytics, React + Node + Postgres.">
+<Optional: a brief, verified project description that helps orient the agent.>
 
 ## Commands
 
-- Package manager: <npm | pnpm | yarn | bun | uv | ...>  <!-- omit if npm -->
-- Build: `<command>`          <!-- only if non-standard -->
-- Test: `<command>`           <!-- only if non-standard -->
-- Typecheck: `<command>`      <!-- only if non-standard -->
+<!-- Optional skeleton: keep only commands that verifiably exist in this
+     repo (manifests, CI, scripts) or that the user asked for. Omit lines —
+     and whole sections — that do not apply. -->
+- Package manager: <verified package manager>
+- Build: `<verified command>`
+- Test: `<verified command>`
+- Typecheck: `<verified command>`
 
 ## Conventions
 
-<!-- Only rules relevant to EVERY task in this repo go here. Everything else
-     lives in separate files referenced below. Keep this file ~10-30 lines. -->
-- <rule relevant to every task>
+<!-- Only what needs to remain available at this scope. Larger rule sets can
+     live in separate files linked below — split only when the content
+     earns it; a single small file is fine. -->
+- <rule the user actually stated>
 - For <domain> conventions, see <docs/domain.md>

@@ -1,66 +1,61 @@
-# Principles: Minimalism and Progressive Disclosure
+# Principles: Why Instruction Files Stay Small
 
-Evidence for why AGENTS.md should be small and point elsewhere. Read this when judging what belongs in the root file or when the user pushes back on trimming.
+The reasoning behind minimalism and progressive disclosure. Read this when
+judging what belongs in an instruction file, or when the user pushes back
+on trimming.
 
-## The Instruction Budget
+## Context Is a Budget
 
-- Frontier LLMs follow ~150–200 instructions with reasonable consistency; smaller models and non-thinking models follow fewer. (Kyle, Humanlayer)
-- Every token in AGENTS.md loads on **every request**, relevant or not.
-- A 2026 evaluation of repository context files found they often raised inference cost by more than 20%, and recommends retaining only minimal, non-redundant requirements. (arXiv:2602.11988)
+- Instructions consume context whenever loaded, whether or not they help
+  the current task. Loading scope and frequency vary by tool and setup.
+- Irrelevant instructions are pure cost; contradictory ones are worse —
+  the agent must guess which one wins.
+- The tradeoff is qualitative: a larger loaded file can spend more context
+  on rules unrelated to the task. Judge each candidate rule by what it
+  buys against that cost. No fixed token or rule count
+  is "correct" — the right size depends on what the user actually needs
+  loaded every time.
 
-Consequences: a small focused file leaves more tokens for the actual work; a bloated file wastes tokens and confuses the agent. Irrelevant instructions are token waste plus distraction.
+## Stale Content Poisons Context
 
-## Stale Documentation Poisons Context
-
-- Humans tolerate stale docs because they have built-in memory to be skeptical of them. Agents re-read them on every request — stale information actively poisons their context.
-- File paths change constantly. "Authentication lives in `src/auth/handlers.ts`" goes wrong the moment the file is renamed or moved, and the agent will confidently look in the wrong place.
-- **Describe capabilities, not structure.** Give hints about where things *might* be and the overall shape of the project. Let the agent generate its own just-in-time documentation during planning.
-- Domain concepts ("organization" vs "group" vs "workspace") are stabler than paths, so they are safer to document — but they can still drift in fast-moving AI-assisted codebases. Keep a light touch.
-
-## The Minimum Root File
-
-Absolute minimum for the root AGENTS.md:
-
-1. One-sentence project description (acts like a role-based prompt)
-2. Package manager (if not npm; `corepack` also silences the warnings)
-3. Build/typecheck commands (if non-standard)
-
-That is it. Everything else goes elsewhere.
+- Stale instructions can mislead an agent even when they look authoritative.
+  Check important claims against current evidence rather than assuming
+  either humans or models reliably recognize outdated content.
+- File paths drift fast. "Authentication lives in `src/auth/handlers.ts`"
+  is wrong the moment the file moves, and the agent will confidently look
+  in the wrong place.
+- Prefer capabilities and domain concepts ("organization" vs "group" vs
+  "workspace") over brittle paths — but a stable, load-bearing path the
+  user genuinely wants is fine. Keep a light touch either way.
 
 ## Progressive Disclosure
 
-Give the agent only what it needs right now and point to resources when needed. Agents are fast at navigating documentation hierarchies.
+Keep useful rules at the scope where they apply. Moving detail out can
+reduce loaded context but adds navigation and maintenance costs.
 
-- Move language rules out of the root file: root says "For TypeScript conventions, see docs/TYPESCRIPT.md" — a conversational reference, no "always", no all-caps forcing.
-- Nest further: `docs/TYPESCRIPT.md` can reference `docs/TESTING.md`, which references the test runner. Build a discoverable resource tree:
+- Global files hold user-wide preferences and boundaries. Project and
+  nested files hold applicable project facts and rules, including useful
+  conditional rules; there is no required set of sections.
+- Keep a small file together. Split substantial specialized material only
+  when selective loading is useful and supported; prefer existing documents
+  over creating new ones solely to shorten the root file.
+- Link directly to the file that holds the answer. Chains of pointers
+  ("see A, which says see B") add hops without adding information; nest
+  only when a file genuinely serves more than one audience.
+- External links are fine (framework docs, API references), and agent
+  skills are another form of progressive disclosure.
 
-  ```text
-  docs/
-  ├── TYPESCRIPT.md   # references TESTING.md
-  ├── TESTING.md      # references specific test runners
-  └── BUILD.md        # references esbuild configuration
-  ```
+## Multi-Level Instruction Files
 
-- External links are fine (framework docs, Prisma docs, etc.).
-- Agent skills are another form of progressive disclosure.
-
-Benefits: domain rules load only when that domain is touched; other tasks don't waste tokens; the file stays focused and portable across model changes.
-
-## Multi-Level AGENTS.md
-
-Subdirectory AGENTS.md files merge with the root — powerful for monorepos:
+Subdirectory instruction files can merge with the root — useful for
+monorepos. Whether merging happens, and how, varies by tool and version;
+see [TOOL-CONVENTIONS.md](TOOL-CONVENTIONS.md) before promising merge
+behavior.
 
 | Level | Content |
 | --- | --- |
 | Root | Repo purpose, how to navigate packages, shared tools |
 | Package | Package purpose, specific stack, package-specific conventions |
 
-Don't overload any level: the agent sees all merged files in its context. Keep each level focused on its own scope.
-
-## Refactoring Checklist (existing files)
-
-1. Find contradictions — for each, ask the user which version to keep
-2. Extract the essentials (the three items above)
-3. Group the rest into logical category files (TypeScript conventions, testing, API design, git workflow)
-4. Create the structure: minimal root + linked files + suggested docs/ layout
-5. Flag for deletion: redundant (the agent already knows this), too vague to be actionable, or overly obvious ("write clean code")
+Where levels merge, every level competes for the same context — keep each
+level focused on its own scope.
