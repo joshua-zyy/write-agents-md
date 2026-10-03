@@ -17,11 +17,31 @@ a row for a real decision, check it against the user's installed version
 | Cursor | `.cursor/rules/*.mdc` | `.cursorrules` is legacy; root `AGENTS.md` also reported as supported |
 | Gemini CLI | `GEMINI.md` | Reported hierarchical loading and `@` imports |
 | Aider | none automatic | `--read AGENTS.md` or a `CONVENTIONS.md` |
-| Pi | `AGENTS.md`, `CLAUDE.md` | Native support, layered loading |
+| Pi | `AGENTS.md`, `CLAUDE.md`, `AGENTS.override.md`; agent-directory copies apply across working directories | Context files load additively from the agent directory, the working directory, and its parents |
 | VS Code / Copilot | root `AGENTS.md` | `/init` generates instructions; nested support is experimental |
 
 Whether nested files merge with the root also varies by tool and version —
 confirm before promising a user that their multi-level layout will merge.
+
+## Pi: Additive Context Files, Replaced System-Prompt Files
+
+Read from Pi's `docs/configuration.md` against an installed version in
+2026-10 — documented behavior, not verified by test:
+
+- Instruction files (`AGENTS.md`, `CLAUDE.md`) load from the agent
+  directory, the working directory, and its parent directories, and apply
+  anywhere below their own directory. Loading does not require project
+  trust.
+- `AGENTS.override.md` replaces `AGENTS.md` or `CLAUDE.md` in the same
+  directory only; it does not suppress files from other directories. This
+  is the documented way to make a directory's own rules win.
+- `SYSTEM.md` and `APPEND_SYSTEM.md` behave differently: a trusted project
+  file takes precedence over the agent-directory file, and files with the
+  same name are **not** combined.
+- Consequence for placement: permissions, safety boundaries, and anything
+  that must hold in every project belong in `AGENTS.md`, which is additive.
+  Environment or tooling facts whose loss inside one project would be
+  tolerable may go in the agent-directory `APPEND_SYSTEM.md`.
 
 ## The Open Convention
 

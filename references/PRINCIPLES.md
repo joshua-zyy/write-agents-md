@@ -15,6 +15,10 @@ on trimming.
   buys against that cost. No fixed token or rule count
   is "correct" — the right size depends on what the user actually needs
   loaded every time.
+- Measure the delta, not the absolute size. Comparing revisions shows which
+  change added what and where a file grew; a constraint restated in two
+  rules is the first DROP candidate. Numbers locate the problem; they are
+  not the goal.
 
 ## Stale Content Poisons Context
 
@@ -42,8 +46,32 @@ reduce loaded context but adds navigation and maintenance costs.
 - Link directly to the file that holds the answer. Chains of pointers
   ("see A, which says see B") add hops without adding information; nest
   only when a file genuinely serves more than one audience.
-- External links are fine (framework docs, API references), and agent
-  skills are another form of progressive disclosure.
+- External links are fine (framework docs, API references).
+
+## Choosing the Carrier
+
+A rule can live in the global instruction file, a project instruction file,
+or an agent skill. The deciding question is *when the rule must apply*,
+not how long the rule is.
+
+| Carrier | Holds | Context cost |
+| --- | --- | --- |
+| Global instruction file | User-wide preferences, permissions, safety boundaries, short unconditional constraints | Loaded in every session, including non-code tasks |
+| Project instruction file | Repo facts: commands, paths, test tiers, gates, conventions | Loaded whenever the agent works in that repo |
+| Agent skill | Procedural detail only some tasks need: audit methods, cleanup procedures, tool recipes | One description line until a task matches; the body loads on match |
+
+- Move procedural detail into a skill when most tasks never need it. This is
+  the cheapest way to shrink a global file without losing the rule.
+- Never move permissions, safety boundaries, or anything that must hold on
+  every task. A skill that fails to match is indistinguishable from no rule,
+  and platforms that advertise skill descriptions only advertise them.
+- Keep a one-line pointer in the file whose tasks would need the skill when
+  the platform does not reliably surface skill descriptions.
+- A rule that applies to every task in every repo — the user's language,
+  output shape, approval boundaries — stays in the global file even when it
+  is long; a repo-specific command does not, even when it is short.
+- Skills are not the only option: an existing document, README section, or
+  project file may already be the right home. Prefer a carrier that exists.
 
 ## Multi-Level Instruction Files
 

@@ -4,8 +4,9 @@ description: >-
   Guides users to create or review AGENTS.md and related agent instruction
   files (CLAUDE.md, GEMINI.md) at global, project, or nested scope. Combines
   read-only evidence gathering with focused questions to produce minimal
-  instruction files with explicit permissions and completion conditions.
-  Use when the user asks to write, create, generate, refactor, review,
+  instruction files with explicit permissions, completion conditions, and
+  each rule on the carrier that fits it — global file, project file, or
+  agent skill. Use when the user asks to write, create, generate, refactor, review,
   audit, improve, or clean up AGENTS.md, CLAUDE.md, GEMINI.md, or other
   agent instruction files.
 ---
@@ -77,6 +78,13 @@ A fresh create needs no KEEP/DROP table; there is nothing prior to preserve.
 
 Produce two artifacts, in order.
 
+**0. Locate the growth (reviews of a file that feels bloated)** — measure
+instead of guessing. Compare the file with the most recent backup or git
+revision: bytes and rule count, which change added the delta, and whether
+the same constraint is restated in two rules. Use those numbers to find
+the increment and the duplication, never as a size target — a rule earns
+its place by changing behavior, not by fitting a budget.
+
 **1. Decision table** — one row per instruction in the existing file, no
 omissions:
 
@@ -95,7 +103,11 @@ matters:
   searching old sessions indefinitely. Assess the weakness the rule
   currently guards against, whether it still occurs, and any side effects;
   distinguish this assessment from historical intent. Do not claim newer
-  models no longer need a rule without evidence.
+  models no longer need a rule without evidence: for an obsolescence DROP,
+  look for recent transcripts showing whether the guarded failure still
+  occurs, whether the rule ever fired, and what changes when it is removed.
+  With no such evidence, keep the rule and mark it unverified. A rule the
+  agent never recalls in-flight is usually a placement problem, not a DROP.
 - **Boundary strength** — could absolute wording halt work the user wants
   continued? Examine effects, scope, and exceptions, not just tool names.
   Location or tool restrictions may be intentional; do not replace them
@@ -117,6 +129,15 @@ matters:
   Vague or redundant rules are DROP candidates, not automatic deletions;
   preserve explicit preferences and resolve conflicting intent with the user.
   Do not shorten the file merely to meet a size target.
+- **Carrier** — which file the rule belongs in: the global file (user-wide
+  preferences, permissions, and short unconditional constraints), the
+  project file (repo facts such as commands, tiers, gates, conventions), or
+  an agent skill (procedural detail only some tasks need). Length is not the
+  criterion — when the rule must apply is. Permissions and safety
+  boundaries stay in the global instruction file: a skill that fails to
+  match is indistinguishable from no rule, and some platforms replace
+  rather than merge their system-prompt files.
+  See [PRINCIPLES.md](references/PRINCIPLES.md#choosing-the-carrier).
 
 **2. Complete replacement draft** — the full file after applying the
 table; every original instruction accounted for as kept, rewritten, or
